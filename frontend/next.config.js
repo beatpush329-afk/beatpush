@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  output: 'export', // Static export for Render
-  distDir: 'out', // Export to 'out' directory
-  trailingSlash: true,
+  // Remove export mode - use standalone for web service deployment
+  output: 'standalone',
   // Temporarily ignore TypeScript and ESLint errors during build for deployment
   typescript: {
     ignoreBuildErrors: true,
@@ -12,7 +11,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: true,
   },
   async headers() {
     return [

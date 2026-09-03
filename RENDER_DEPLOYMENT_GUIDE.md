@@ -21,14 +21,16 @@
 #### B. Deploy Frontend (New)
 
 1. **Go to Render Dashboard**: https://dashboard.render.com
-2. **Click "New" → "Static Site"**
+2. **Click "New" → "Web Service"** (NOT Static Site - Next.js needs server)
 3. **Connect GitHub**: Select `beatpush329-afk/beatpush`
 4. **Configure:**
    ```
    Name: beatpush-frontend
    Root Directory: frontend
+   Runtime: Node
    Build Command: npm install && npm run build
-   Publish Directory: out
+   Start Command: npm start
+   Instance Type: Free
    Auto-Deploy: Yes
    ```
 
@@ -36,11 +38,12 @@
    ```
    NEXT_PUBLIC_API_URL = https://beatpush-c1gs.onrender.com
    NODE_VERSION = 20.11.0
+   PORT = 10000
    ```
 
-6. **Click "Create Static Site"**
+6. **Click "Create Web Service"**
 
-7. **Wait for build** (3-5 minutes)
+7. **Wait for build** (5-7 minutes)
 
 8. **Your frontend URL**: Will be `https://beatpush-frontend.onrender.com` (or custom name you chose)
 
@@ -117,12 +120,11 @@ Once both services are live:
 
 ## Free Tier Limits
 
-### Static Site (Frontend):
-- ✅ **Free forever**
-- ✅ 100GB bandwidth/month
+### Web Service (Frontend):
+- ✅ 750 hours/month (enough for 24/7 on one service)
 - ✅ Auto SSL
-- ✅ Global CDN
 - ⚠️ Sleeps after 15 min inactivity (wakes in ~30s)
+- ⚠️ Limited to 512MB RAM
 
 ### Web Service (Backend):
 - ✅ 750 hours/month (enough for 24/7 on one service)
