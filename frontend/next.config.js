@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false, // Disable strict mode to speed up builds
+  reactStrictMode: false,
+  output: 'export', // Static export for Render
+  distDir: 'out', // Export to 'out' directory
+  trailingSlash: true,
   // Temporarily ignore TypeScript and ESLint errors during build for deployment
   typescript: {
     ignoreBuildErrors: true,
@@ -8,10 +11,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Configure static export timeout
-  staticPageGenerationTimeout: 180, // 3 minutes per page
   images: {
-    unoptimized: true, // Required for Netlify
+    unoptimized: true, // Required for static export
   },
   async headers() {
     return [

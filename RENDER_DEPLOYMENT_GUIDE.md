@@ -1,232 +1,162 @@
-# BeatsPush Backend Deployment to Render
+# BeatsPush - Render Deployment Guide
 
-## Prerequisites
-- GitHub account with repository: https://github.com/beatpush329-afk/beatpush
-- Render account (sign up at https://render.com)
-- All environment variables ready
+## Quick Setup (Both Backend + Frontend)
 
-## Step-by-Step Deployment
+### Option 1: Auto-Deploy with render.yaml (Recommended)
 
-### 1. Sign Up / Log In to Render
-1. Go to https://render.com
-2. Sign up or log in with your GitHub account (beatpush329-afk)
-3. Authorize Render to access your GitHub repositories
+1. **Go to Render Dashboard**: https://dashboard.render.com
+2. **Click "New" → "Blueprint"**
+3. **Connect your GitHub repo**: `beatpush329-afk/beatpush`
+4. **Render will detect `render.yaml`** and create both services automatically
+5. **Add environment variables** in the backend service:
+   - `SECRET_KEY` = `beatspush_production_min_32_chars_secret_key_change_this_12345`
+   - `SMTP_USER` = `beatpush329@gmail.com`
+   - `SMTP_PASSWORD` = `YOUR_GMAIL_APP_PASSWORD`
 
-### 2. Create a New Web Service
+### Option 2: Manual Setup (Step by Step)
 
-#### Option A: Using Blueprint (Automated - Recommended)
-1. Click **"New +"** → **"Blueprint"**
-2. Connect your repository: `beatpush329-afk/beatpush`
-3. Render will detect `render.yaml` and auto-configure everything
-4. Click **"Apply"**
-5. Skip to Step 4
+#### A. Deploy Backend (Already Done ✅)
+- Your backend is live at: https://beatpush-c1gs.onrender.com
 
-#### Option B: Manual Setup
-1. Click **"New +"** → **"Web Service"**
-2. Connect your repository: `beatpush329-afk/beatpush`
-3. Configure the service:
-   - **Name:** `beatpush-backend`
-   - **Region:** Oregon (US West) or closest to you
-   - **Branch:** `main`
-   - **Root Directory:** `backend`
-   - **Runtime:** Python 3
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
-   - **Plan:** Free
+#### B. Deploy Frontend (New)
 
-### 3. Create PostgreSQL Database
-1. Click **"New +"** → **"PostgreSQL"**
-2. Configure:
-   - **Name:** `beatpush-db`
-   - **Database:** `beatpush`
-   - **Region:** Same as your web service (Oregon)
-   - **Plan:** Free
-3. Click **"Create Database"**
-4. Wait for database to be ready
-5. Copy the **Internal Database URL**
+1. **Go to Render Dashboard**: https://dashboard.render.com
+2. **Click "New" → "Static Site"**
+3. **Connect GitHub**: Select `beatpush329-afk/beatpush`
+4. **Configure:**
+   ```
+   Name: beatpush-frontend
+   Root Directory: frontend
+   Build Command: npm install && npm run build
+   Publish Directory: out
+   Auto-Deploy: Yes
+   ```
 
-### 4. Create Redis Instance
-1. Click **"New +"** → **"Redis"**
-2. Configure:
-   - **Name:** `beatpush-redis`
-   - **Region:** Same as your web service
-   - **Plan:** Free
-3. Click **"Create Redis"**
-4. Copy the **Internal Redis URL**
+5. **Environment Variables** (Click "Advanced" → "Add Environment Variable"):
+   ```
+   NEXT_PUBLIC_API_URL = https://beatpush-c1gs.onrender.com
+   NODE_VERSION = 20.11.0
+   ```
 
-### 5. Configure Environment Variables
-Go to your web service → **Environment** tab and add:
+6. **Click "Create Static Site"**
 
-#### Required Variables:
-```bash
-# Database
-DATABASE_URL=<paste_internal_postgres_url>
+7. **Wait for build** (3-5 minutes)
 
-# Security
-SECRET_KEY=<generate_random_string_min_32_chars>
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# Redis
-REDIS_URL=<paste_internal_redis_url>
-
-# Application
-ENVIRONMENT=production
-DEBUG=False
-
-# CORS
-FRONTEND_URL=https://your-frontend-url.vercel.app
-ALLOWED_ORIGINS=https://your-frontend-url.vercel.app,https://beatpush.com
-
-# Stripe (Payment)
-STRIPE_SECRET_KEY=<your_stripe_secret_key>
-STRIPE_PUBLISHABLE_KEY=<your_stripe_publishable_key>
-STRIPE_WEBHOOK_SECRET=<your_stripe_webhook_secret>
-
-# Paystack (Alternative Payment)
-PAYSTACK_SECRET_KEY=<your_paystack_secret_key>
-PAYSTACK_PUBLIC_KEY=<your_paystack_public_key>
-
-# Email (Optional - for notifications)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=<your_email>
-SMTP_PASSWORD=<your_app_password>
-
-# Cloudflare R2 / AWS S3 (File Storage)
-AWS_ACCESS_KEY_ID=<your_r2_access_key>
-AWS_SECRET_ACCESS_KEY=<your_r2_secret_key>
-R2_ENDPOINT=<your_r2_endpoint_url>
-R2_BUCKET_NAME=beatpush-uploads
-
-# AI (OpenAI)
-OPENAI_API_KEY=<your_openai_api_key>
-
-# SMS (Optional - Twilio)
-TWILIO_ACCOUNT_SID=<your_twilio_sid>
-TWILIO_AUTH_TOKEN=<your_twilio_token>
-TWILIO_PHONE_NUMBER=<your_twilio_phone>
-```
-
-### 6. Run Database Migrations
-After deployment, you need to run migrations:
-
-#### Option 1: Using Render Shell
-1. Go to your web service
-2. Click **"Shell"** tab
-3. Run:
-```bash
-cd backend
-alembic upgrade head
-```
-
-#### Option 2: Add to Build Command
-Update build command to:
-```bash
-pip install -r requirements.txt && alembic upgrade head
-```
-
-### 7. Verify Deployment
-1. Wait for deployment to complete (5-10 minutes)
-2. Click on your service URL (e.g., `https://beatpush-backend.onrender.com`)
-3. You should see the API docs at: `https://beatpush-backend.onrender.com/docs`
-4. Test the health endpoint: `https://beatpush-backend.onrender.com/`
-
-### 8. Post-Deployment Setup
-
-#### Create Admin User
-Use the Render Shell:
-```bash
-python create_admin_user.py
-```
-
-#### Verify Database Tables
-```bash
-python check_db.py
-```
-
-## Important Notes
-
-### Free Tier Limitations
-- **Spin down after 15 minutes of inactivity**
-- Cold starts take 30-60 seconds
-- 750 hours/month free
-- Consider upgrading to paid plan for production
-
-### Database Backups
-- Free PostgreSQL has 7-day retention
-- Upgrade to paid plan for longer retention
-
-### Environment Variables Security
-- Never commit `.env` files
-- Use Render's built-in secret management
-- Rotate keys regularly
-
-### Monitoring
-- Enable Render's built-in metrics
-- Set up health check endpoint
-- Monitor logs regularly
-
-## Troubleshooting
-
-### Common Issues
-
-**1. Build Fails**
-- Check Python version in `runtime.txt` (should be 3.11.0)
-- Verify all dependencies in `requirements.txt`
-- Check build logs for specific errors
-
-**2. Database Connection Fails**
-- Verify `DATABASE_URL` is set correctly
-- Use internal database URL (faster, free)
-- Check if database is running
-
-**3. Redis Connection Fails**
-- Verify `REDIS_URL` is set
-- Use internal Redis URL
-- Check if Redis instance is running
-
-**4. Application Won't Start**
-- Check start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-- Verify `main.py` exists in backend directory
-- Check application logs
-
-**5. CORS Errors**
-- Update `ALLOWED_ORIGINS` with your frontend URL
-- Restart the service after updating env vars
-
-## Update Deployment
-
-To update your deployment:
-```bash
-git add .
-git commit -m "Update backend"
-git push origin main
-```
-
-Render will automatically detect changes and redeploy.
-
-## Custom Domain (Optional)
-
-1. Go to **Settings** → **Custom Domain**
-2. Add your domain (e.g., `api.beatpush.com`)
-3. Update DNS records as instructed
-4. SSL certificate is automatic
-
-## Scaling (Paid Plans)
-
-For production, consider:
-- **Starter Plan** ($7/month): No spin down, better performance
-- **Standard Plan** ($25/month): Horizontal scaling, more resources
-- **Database Upgrade**: More storage and connections
-
-## Support
-
-- Render Docs: https://render.com/docs
-- Community Forum: https://community.render.com
-- Email Support: support@render.com
+8. **Your frontend URL**: Will be `https://beatpush-frontend.onrender.com` (or custom name you chose)
 
 ---
 
-**Repository:** https://github.com/beatpush329-afk/beatpush
-**Deployment Date:** 2026
+## Update Backend FRONTEND_URL
+
+After frontend deploys, update backend env var:
+
+1. Go to backend service on Render
+2. Environment → Edit `FRONTEND_URL`
+3. Change to: `https://beatpush-frontend.onrender.com` (or your actual frontend URL)
+4. Save (will trigger redeploy)
+
+---
+
+## Custom Domain Setup
+
+### For Frontend:
+1. Go to frontend service → Settings → Custom Domain
+2. Add: `www.beatpush.com` (or your domain)
+3. Add DNS records at your domain provider:
+   ```
+   Type: CNAME
+   Name: www
+   Value: beatpush-frontend.onrender.com
+   ```
+
+### For Backend:
+1. Go to backend service → Settings → Custom Domain
+2. Add: `api.beatpush.com`
+3. Add DNS records:
+   ```
+   Type: CNAME
+   Name: api
+   Value: beatpush-c1gs.onrender.com
+   ```
+
+---
+
+## Troubleshooting
+
+### Build Fails with "onClick handler" error?
+The `output: 'export'` in `next.config.js` should fix this by doing static export.
+
+### Frontend shows blank page?
+1. Check browser console for errors
+2. Verify `NEXT_PUBLIC_API_URL` environment variable is set correctly
+3. Check if API is accessible: Visit `https://beatpush-c1gs.onrender.com/health`
+
+### "Cannot find module" errors?
+Run locally first to verify:
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+### Static export fails on dynamic routes?
+Some pages with dynamic data fetching may need to be converted to client-side data fetching.
+
+---
+
+## Testing Deployment
+
+Once both services are live:
+
+1. **Visit frontend URL**: `https://beatpush-frontend.onrender.com`
+2. **Try registration**: Create a test account
+3. **Check backend logs**: Render Dashboard → Backend Service → Logs
+4. **Test API**: `https://beatpush-c1gs.onrender.com/docs`
+
+---
+
+## Free Tier Limits
+
+### Static Site (Frontend):
+- ✅ **Free forever**
+- ✅ 100GB bandwidth/month
+- ✅ Auto SSL
+- ✅ Global CDN
+- ⚠️ Sleeps after 15 min inactivity (wakes in ~30s)
+
+### Web Service (Backend):
+- ✅ 750 hours/month (enough for 24/7 on one service)
+- ✅ Auto SSL
+- ⚠️ Sleeps after 15 min inactivity
+- ⚠️ Limited to 512MB RAM
+
+### Tips to stay within limits:
+- Keep only production services on free tier
+- Use paid tier ($7/month) when you have users to avoid sleep
+- Monitor bandwidth in dashboard
+
+---
+
+## Current Status
+
+✅ **Backend**: Live at https://beatpush-c1gs.onrender.com
+⏳ **Frontend**: Ready to deploy (follow steps above)
+
+---
+
+## Next Steps After Deployment
+
+1. ✅ Test all features (login, upload, browse)
+2. ✅ Add payment integration (Paystack keys)
+3. ✅ Set up custom domain
+4. ✅ Configure email (Gmail SMTP or SendGrid)
+5. ✅ Monitor logs for errors
+6. ✅ Plan for missing features (see COMPLETE_ARCHITECTURE_ROADMAP.txt)
+
+---
+
+## Support
+
+- **Render Docs**: https://render.com/docs
+- **Render Status**: https://status.render.com
+- **Community**: https://community.render.com
