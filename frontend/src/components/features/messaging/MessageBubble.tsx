@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AttachmentPreview } from './AttachmentPreview';
+import { AudioPlayer } from './AudioPlayer';
 import { format } from 'date-fns';
 import { MoreVertical, Trash2, Copy, Flag, Pencil, Check, CheckCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -94,10 +95,22 @@ export default React.memo(function MessageBubble({
             isOwn
               ? 'bg-primary text-primary-foreground rounded-br-sm'
               : 'bg-muted text-foreground rounded-bl-sm',
-            isDeleted && 'italic opacity-50 text-xs'
+            isDeleted && 'italic opacity-50 text-xs',
+            message.audio_url && 'p-0' // Remove padding for audio messages
           )}
         >
-          {message.content}
+          {/* Audio message */}
+          {!isDeleted && message.audio_url && (
+            <AudioPlayer
+              audioUrl={message.audio_url}
+              duration={message.audio_duration || 0}
+              waveformData={message.waveform_data}
+              className="min-w-[250px]"
+            />
+          )}
+
+          {/* Text content (only if no audio or deleted) */}
+          {(!message.audio_url || isDeleted) && message.content}
 
           {/* Attachment previews */}
           {!isDeleted && message.attachments && message.attachments.length > 0 && (

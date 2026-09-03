@@ -42,6 +42,8 @@ pandas==2.0.3
 # Audio Processing
 librosa==0.10.1
 soundfile==0.12.1
+pydub==0.25.1
+ffmpeg-python==0.2.0
 
 # Email & SMS
 python-dotenv==1.0.0

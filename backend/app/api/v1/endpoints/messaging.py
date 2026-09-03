@@ -977,3 +977,299 @@ async def report_message(
     )
     
     return ReportMessageResponse.from_orm(report)
+
+
+# ============================================================================
+# AUDIO MESSAGE ENDPOINTS (Phase 1 - Audio Message System)
+# ============================================================================
+
+@router.post("/messages/audio", response_model=MessageResponse, status_code=status.HTTP_201_CREATED)
+async def send_audio_message(
+    conversation_id: str = Query(..., description="Conversation ID"),
+    audio_file: UploadFile = File(..., description="Audio file (mp3, wav, ogg, m4a, webm)"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Send an audio/voice message
+    
+    **Supported Formats:**
+    - mp3, wav, ogg, m4a, webm
+    - Max duration: 5 minutes
+    - Max file size: 10MB
+    
+    **Processing:**
+    - Compresses audio to 64kbps MP3
+    - Extracts duration
+    - Generates waveform visualization data
+    - Uploads to storage (S3/R2)
+    
+    **Returns:**
+    - Message object with `audio_url`, `audio_duration`, and `waveform_data`
+    
+    **Side Effects:**
+    - Same as regular message (updates conversation, triggers notifications/WebSocket)
+    """
+    from app.services.audio_processing_service import audio_service
+    from app.services.upload_service import upload_service
+    import uuid
+    
+    messaging_service = MessagingService(db)
+    
+    # Validate conversation access
+    conversation = messaging_service._validate_conversation_access(
+        conversation_id=conversation_id,
+        user_id=current_user.id
+    )
+    
+    # Read audio file
+    audio_data = await audio_file.read()
+    
+    # Get file extension
+    file_extension = audio_file.filename.split('.')[-1].lower()
+    
+    # Validate audio file
+    if not audio_service.validate_audio_file(audio_data, file_extension):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid audio file. Supported formats: {', '.join(audio_service.SUPPORTED_FORMATS)}. Max size: 10MB"
+        )
+    
+    try:
+        # Process audio (compress, extract duration, generate waveform)
+        processed = audio_service.process_audio_message(audio_data, file_extension)
+        
+        # Upload compressed audio to storage
+        audio_filename = f"audio_messages/{current_user.id}/{uuid.uuid4()}.{processed['format']}"
+        audio_url = await upload_service.upload_file(
+            file_data=processed['compressed_data'],
+            filename=audio_filename,
+            content_type=f"audio/{processed['format']}"
+        )
+        
+        # Create message with audio data
+        from app.models.messaging import Message
+        from datetime import datetime
+        
+        message = Message(
+            id=str(uuid.uuid4()),
+            conversation_id=conversation_id,
+            sender_id=current_user.id,
+            content="[Audio Message]",  # Placeholder text
+            audio_url=audio_url,
+            audio_duration=processed['duration'],
+            waveform_data=processed['waveform'],
+            created_at=datetime.utcnow()
+        )
+        
+        db.add(message)
+        
+        # Update conversation metadata
+        conversation.last_activity_at = datetime.utcnow()
+        conversation.last_message_preview = "🎤 Audio message"
+        
+        # Update unread counts for other participants
+        from app.models.messaging import ConversationParticipant
+        other_participants = (
+            db.query(ConversationParticipant)
+            .filter(
+                ConversationParticipant.conversation_id == conversation_id,
+                ConversationParticipant.user_id != current_user.id,
+                ConversationParticipant.left_at.is_(None)
+            )
+            .all()
+        )
+        
+        for participant in other_participants:
+            participant.unread_count += 1
+        
+        db.commit()
+        db.refresh(message)
+        
+        # Build response
+        message_response = messaging_service._build_message_response(message)
+        
+        # Get all participants for WebSocket broadcast
+        all_participants = (
+            db.query(ConversationParticipant)
+            .filter(
+                ConversationParticipant.conversation_id == conversation_id,
+                ConversationParticipant.left_at.is_(None)
+            )
+            .all()
+        )
+        participant_ids = [p.user_id for p in all_participants]
+        
+        # Broadcast via WebSocket (non-blocking)
+        try:
+            await connection_manager.broadcast_new_message(
+                conversation_id=conversation_id,
+                participant_ids=participant_ids,
+                message_response=message_response
+            )
+        except Exception as e:
+            print(f"⚠️ WebSocket broadcast failed: {e}")
+        
+        # Create notification for offline recipients
+        try:
+            from app.services.messaging_notification_helpers import create_message_notification
+            
+            for participant in other_participants:
+                # Check if user is online via WebSocket
+                is_online = await connection_manager.is_user_online(participant.user_id)
+                
+                if not is_online:
+                    notification_service = NotificationService(db)
+                    create_message_notification(
+                        db=db,
+                        notification_service=notification_service,
+                        sender=current_user,
+                        recipient_id=participant.user_id,
+                        message_preview="🎤 Audio message",
+                        conversation_id=conversation_id
+                    )
+        except Exception as e:
+            print(f"⚠️ Notification creation failed: {e}")
+        
+        return message_response
+        
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Error processing audio message: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to process audio message"
+        )
+
+
+@router.get("/messages/{message_id}/audio")
+async def get_audio_message(
+    message_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Get audio message details
+    
+    **Returns:**
+    - Audio URL (presigned if S3)
+    - Duration
+    - Waveform data
+    - Original message metadata
+    
+    **Access Control:**
+    - Only conversation participants can access
+    """
+    from app.models.messaging import Message, ConversationParticipant
+    
+    # Get message
+    message = db.query(Message).filter(Message.id == message_id).first()
+    if not message:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Message not found"
+        )
+    
+    # Check if user is participant in conversation
+    is_participant = (
+        db.query(ConversationParticipant)
+        .filter(
+            ConversationParticipant.conversation_id == message.conversation_id,
+            ConversationParticipant.user_id == current_user.id,
+            ConversationParticipant.left_at.is_(None)
+        )
+        .first()
+    )
+    
+    if not is_participant:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+    
+    # Check if message has audio
+    if not message.audio_url:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This message does not contain audio"
+        )
+    
+    return {
+        "message_id": message.id,
+        "audio_url": message.audio_url,
+        "duration": message.audio_duration,
+        "waveform_data": message.waveform_data,
+        "created_at": message.created_at,
+        "sender_id": message.sender_id
+    }
+
+
+@router.delete("/messages/{message_id}/audio", response_model=SuccessResponse)
+async def delete_audio_message(
+    message_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Delete audio from a message
+    
+    **Access Control:**
+    - Only message sender can delete
+    - Removes audio file from storage
+    - Clears audio_url, audio_duration, waveform_data
+    - Keeps the message record with placeholder text
+    
+    **Returns:**
+    - Success confirmation
+    """
+    from app.models.messaging import Message
+    from app.services.upload_service import upload_service
+    
+    # Get message
+    message = db.query(Message).filter(Message.id == message_id).first()
+    if not message:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Message not found"
+        )
+    
+    # Check if sender
+    if message.sender_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only message sender can delete audio"
+        )
+    
+    # Check if message has audio
+    if not message.audio_url:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This message does not contain audio"
+        )
+    
+    try:
+        # Delete audio file from storage
+        await upload_service.delete_file(message.audio_url)
+        
+        # Clear audio data from message
+        message.audio_url = None
+        message.audio_duration = None
+        message.waveform_data = None
+        message.content = "[Audio message deleted]"
+        
+        db.commit()
+        
+        return SuccessResponse(message="Audio message deleted successfully")
+        
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Error deleting audio message: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete audio message"
+        )

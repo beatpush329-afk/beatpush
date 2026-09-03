@@ -62,6 +62,14 @@ export interface Message {
   read_by: string[];
   attachments?: MessageAttachment[];
   deleted_at?: string;
+  // Audio message fields
+  audio_url?: string;
+  audio_duration?: number;
+  waveform_data?: {
+    peaks: number[];
+    duration: number;
+    samples: number;
+  };
 }
 
 export interface MessageSettings {
@@ -248,6 +256,66 @@ class MessagingService {
   async getUnreadCount(conversationId?: string): Promise<UnreadCountResponse> {
     const params = conversationId ? { conversation_id: conversationId } : {};
     const response = await apiClient.get('/messaging/unread-count', { params });
+    return response.data;
+  }
+
+  // ==========================================================================
+  // AUDIO MESSAGES (Phase 1 - Audio Message System)
+  // ==========================================================================
+
+  /**
+   * Send an audio/voice message
+   * @param conversationId - ID of the conversation
+   * @param audioBlob - Recorded audio blob (webm format from MediaRecorder)
+   * @returns Created message with audio data
+   */
+  async sendAudioMessage(
+    conversationId: string,
+    audioBlob: Blob
+  ): Promise<Message> {
+    const formData = new FormData();
+    formData.append('audio_file', audioBlob, 'voice-message.webm');
+
+    const response = await apiClient.post(
+      `/messaging/messages/audio?conversation_id=${conversationId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+    return response.data;
+  }
+
+  /**
+   * Get audio message details
+   * @param messageId - ID of the message
+   * @returns Audio message data with URL, duration, and waveform
+   */
+  async getAudioMessage(messageId: string): Promise<{
+    message_id: string;
+    audio_url: string;
+    duration: number;
+    waveform_data?: {
+      peaks: number[];
+      duration: number;
+      samples: number;
+    };
+    created_at: string;
+    sender_id: string;
+  }> {
+    const response = await apiClient.get(`/messaging/messages/${messageId}/audio`);
+    return response.data;
+  }
+
+  /**
+   * Delete audio from a message (only sender can delete)
+   * @param messageId - ID of the message
+   * @returns Success message
+   */
+  async deleteAudioMessage(messageId: string): Promise<{ message: string }> {
+    const response = await apiClient.delete(`/messaging/messages/${messageId}/audio`);
     return response.data;
   }
 

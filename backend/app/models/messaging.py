@@ -113,6 +113,11 @@ class Message(Base):
     deleted_at = Column(DateTime(timezone=True))
     is_edited = Column(Boolean, default=False)
     
+    # Audio message fields
+    audio_url = Column(Text, nullable=True)
+    audio_duration = Column(Integer, nullable=True)  # Duration in seconds
+    waveform_data = Column(JSON, nullable=True)  # Waveform visualization data
+    
     # AI feature fields (future use)
     language_code = Column(String(10))
     spam_score = Column(Numeric(3, 2))
