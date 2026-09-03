@@ -23,7 +23,53 @@ SMTP_PASSWORD=abcd efgh ijkl mnop
 
 ---
 
-## 💳 Stripe (Payment Processing) - FREE TEST MODE
+## 💳 Paystack (Payment Processing) - FREE TEST MODE ⭐ PRIMARY
+
+**Perfect for Nigeria & Africa!** Supports NGN (Naira), USD, EUR, GBP, and more.
+
+### Sign Up
+1. Go to: https://dashboard.paystack.com/signup
+2. Sign up with email: beatpush329@gmail.com
+3. Verify email
+
+### Get Test Keys
+1. Go to: https://dashboard.paystack.com/#/settings/developer
+2. Switch to **Test Mode** (toggle at top)
+3. Copy **Public Key** (starts with `pk_test_`)
+4. Copy **Secret Key** (starts with `sk_test_`)
+
+### Use in Backend:
+```bash
+PAYSTACK_SECRET_KEY=sk_test_...
+PAYSTACK_PUBLIC_KEY=pk_test_...
+PAYMENT_PROVIDER=paystack
+DEFAULT_CURRENCY=NGN
+```
+
+### Use in Frontend:
+```bash
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_...
+NEXT_PUBLIC_PAYMENT_PROVIDER=paystack
+NEXT_PUBLIC_DEFAULT_CURRENCY=NGN
+```
+
+### Features:
+- ✅ **Naira Payments** (NGN)
+- ✅ **Bank Transfer** (Automated)
+- ✅ **USSD** (*737# payments)
+- ✅ **Mobile Money**
+- ✅ **Subscriptions** (Built-in)
+- ✅ **International Cards**
+
+**Note:** Test mode is 100% FREE. No real money involved!
+
+---
+
+## 💰 Stripe (Alternative - For US/Europe ONLY)
+
+**Use Paystack instead!** Stripe doesn't support Nigerian Naira well.
+
+If you still want Stripe for international markets:
 
 ### Sign Up
 1. Go to: https://dashboard.stripe.com/register
@@ -263,7 +309,7 @@ SMTP_PASSWORD=<16-char-app-password>
 ```
 
 ### Should Have (Core Features):
-⭐ **Stripe Test Keys** - 5 minutes to get
+⭐ **Paystack Test Keys** - 5 minutes to get (PRIMARY)
 ⭐ **Cloudflare R2** - 10 minutes to set up
 
 ### Nice to Have (Add Later):
@@ -276,7 +322,7 @@ SMTP_PASSWORD=<16-char-app-password>
 ## 🎯 Quick Start Order
 
 1. **Gmail App Password** (2 min) ✅ DO THIS FIRST
-2. **Stripe Test Keys** (5 min) ⭐ ESSENTIAL
+2. **Paystack Test Keys** (5 min) ⭐ ESSENTIAL (Supports Naira!)
 3. **Cloudflare R2** (10 min) ⭐ IMPORTANT
 4. **Deploy Backend** to Render
 5. **Deploy Frontend** to Netlify
@@ -295,7 +341,7 @@ REDIS_ENABLED=false
 AI_ENABLED=false
 SMS_ENABLED=false
 
-# This works with just Gmail SMTP + Stripe test keys!
+# This works with just Gmail SMTP + Paystack test keys!
 ```
 
 ### Security Notes:

@@ -7,10 +7,12 @@
 - Generate password for "Mail"
 - Copy 16-character password
 
-### 2. Stripe Test Keys (FREE)
-- Sign up: https://dashboard.stripe.com/register
-- Get keys: https://dashboard.stripe.com/test/apikeys
-- Copy `pk_test_...` and `sk_test_...`
+### 2. Paystack Test Keys (FREE - 5 minutes)
+- Sign up: https://dashboard.paystack.com/signup
+- Verify your email
+- Get keys: https://dashboard.paystack.com/#/settings/developers
+- Copy `pk_test_...` (Public Key) and `sk_test_...` (Secret Key)
+- **Supports:** NGN (Naira), USD, EUR, GBP, and more!
 
 ## 📦 Deploy Backend to Render (10 Minutes)
 
@@ -31,8 +33,10 @@ Go to your web service → **Environment** tab:
 **MINIMUM REQUIRED:**
 ```bash
 SECRET_KEY=test_secret_key_replace_this_min_32_characters_long_12345
-STRIPE_SECRET_KEY=sk_test_your_stripe_key_here
-STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_key_here
+PAYSTACK_SECRET_KEY=sk_test_your_paystack_secret_key_here
+PAYSTACK_PUBLIC_KEY=pk_test_your_paystack_public_key_here
+PAYMENT_PROVIDER=paystack
+DEFAULT_CURRENCY=NGN
 SMTP_USER=beatpush329@gmail.com
 SMTP_PASSWORD=your_16_char_gmail_app_password
 ENVIRONMENT=production
@@ -85,8 +89,9 @@ Site settings → Environment variables:
 
 ```bash
 NEXT_PUBLIC_API_URL=https://beatpush-backend.onrender.com
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_key_here
-NEXT_PUBLIC_PAYMENT_PROVIDER=stripe
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_your_paystack_public_key_here
+NEXT_PUBLIC_PAYMENT_PROVIDER=paystack
+NEXT_PUBLIC_DEFAULT_CURRENCY=NGN
 NEXT_PUBLIC_APP_NAME=BeatsPush
 ```
 
@@ -149,8 +154,10 @@ SMTP_USER=beatpush329@gmail.com
 SMTP_PASSWORD=<your_gmail_app_password>
 
 # Payment
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_PUBLISHABLE_KEY=pk_test_...
+PAYSTACK_SECRET_KEY=sk_test_...
+PAYSTACK_PUBLIC_KEY=pk_test_...
+PAYMENT_PROVIDER=paystack
+DEFAULT_CURRENCY=NGN
 
 # CORS
 FRONTEND_URL=https://your-site.netlify.app
@@ -164,8 +171,9 @@ DEBUG=False
 ### Frontend (.env.local)
 ```bash
 NEXT_PUBLIC_API_URL=https://beatpush-backend.onrender.com
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-NEXT_PUBLIC_PAYMENT_PROVIDER=stripe
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_...
+NEXT_PUBLIC_PAYMENT_PROVIDER=paystack
+NEXT_PUBLIC_DEFAULT_CURRENCY=NGN
 NEXT_PUBLIC_APP_NAME=BeatsPush
 NEXT_PUBLIC_ENABLE_AI_FEATURES=true
 NEXT_PUBLIC_ENABLE_MESSAGING=true
