@@ -1,8 +1,8 @@
 # Netlify Configuration for BeatsPush Frontend
 
 [build]
-  # Build command
-  command = "npm run build"
+  # Build command - force dynamic pages then build
+  command = "node force-dynamic.js && npm run build"
   
   # Directory with build output
   publish = ".next"

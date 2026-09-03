@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false, // Disable strict mode to speed up builds
   // Temporarily ignore TypeScript and ESLint errors during build for deployment
   typescript: {
     ignoreBuildErrors: true,
@@ -8,14 +8,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Configure static export timeout
+  staticPageGenerationTimeout: 180, // 3 minutes per page
   images: {
-    domains: [
-      'beatspush-1.onrender.com',
-      'beatspush-c1gs.onrender.com',
-      'res.cloudinary.com',
-      'localhost',
-    ],
-    formats: ['image/avif', 'image/webp'],
+    unoptimized: true, // Required for Netlify
   },
   async headers() {
     return [
