@@ -13,7 +13,7 @@ import logging
 from fastapi import HTTPException, Depends, status, Response
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
-import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.sql import text
 
