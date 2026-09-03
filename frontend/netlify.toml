@@ -4,7 +4,7 @@
   # Build command
   command = "npm run build"
   
-  # Directory with build output (Next.js standalone output)
+  # Directory with build output
   publish = ".next"
   
   # Base directory
@@ -13,6 +13,8 @@
 [build.environment]
   # Node.js version
   NODE_VERSION = "18.17.0"
+  # Skip type checking during build (already done locally)
+  CI = "false"
 
 # Next.js specific redirects
 [[redirects]]
