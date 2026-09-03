@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+
+export const dynamic = "force-dynamic";
+
 export default function QuickLoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);

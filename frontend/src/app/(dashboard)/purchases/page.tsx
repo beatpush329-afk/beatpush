@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Transaction } from '@/lib/payment/paystack';
 
+
+export const dynamic = "force-dynamic";
+
 export default function PurchasesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading] = useState(false);

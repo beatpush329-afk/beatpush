@@ -14,6 +14,9 @@ import { GrowthIndicator } from '@/components/features/analytics/GrowthIndicator
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/useToast';
 
+
+export const dynamic = "force-dynamic";
+
 export default function AnalyticsPage() {
   console.log('AnalyticsPage: Rendering');
 

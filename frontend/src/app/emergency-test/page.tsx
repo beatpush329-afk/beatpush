@@ -1,4 +1,7 @@
 // NO IMPORTS - Pure React only
+
+export const dynamic = "force-dynamic";
+
 export default function EmergencyTest() {
   return (
     <html>

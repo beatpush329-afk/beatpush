@@ -11,6 +11,9 @@ import { ArrowLeft, Search, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
+
+export const dynamic = "force-dynamic";
+
 interface UserSearchResult {
   id: string;
   username: string;

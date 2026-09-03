@@ -7,6 +7,9 @@ import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
 interface Booking {

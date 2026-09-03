@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 
+
+export const dynamic = "force-dynamic";
+
 export default function DebugPage() {
   const authStore = useAuthStore();
   const [logs, setLogs] = useState<string[]>([]);

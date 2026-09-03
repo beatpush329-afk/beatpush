@@ -5,6 +5,9 @@ import { useAdminUsers, useSuspendUser, useActivateUser, useDeleteUser } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
+
+export const dynamic = "force-dynamic";
+
   Select,
   SelectContent,
   SelectItem,

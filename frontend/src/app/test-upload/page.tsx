@@ -9,6 +9,9 @@ import React, { useState, useEffect } from 'react';
 import { AudioUploader } from '@/components/features/upload/AudioUploader';
 import { ImageUploader } from '@/components/features/upload/ImageUploader';
 import { 
+
+export const dynamic = "force-dynamic";
+
   AudioUploadResult, 
   ImageUploadResult, 
   getUploadStats, 

@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
+
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0);
 

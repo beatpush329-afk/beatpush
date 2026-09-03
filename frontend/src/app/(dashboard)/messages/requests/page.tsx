@@ -9,6 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Check, X, Inbox } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
+
+export const dynamic = "force-dynamic";
+
 export default function MessageRequestsPage() {
   const router = useRouter();
   const [requests, setRequests] = useState<Conversation[]>([]);

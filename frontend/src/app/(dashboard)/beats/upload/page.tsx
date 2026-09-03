@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import beatService from '@/services/beatService';
 
+
+export const dynamic = "force-dynamic";
+
 const GENRES = [
   'Afrobeat',
   'Hip Hop',

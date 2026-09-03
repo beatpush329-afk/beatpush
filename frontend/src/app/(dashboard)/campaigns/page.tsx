@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input';
 import { DateRangePicker } from '@/components/ui/date-range-picker';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 type CampaignStatus = 'active' | 'paused' | 'completed' | 'draft';
 
 interface Campaign {

@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+
+export const dynamic = "force-dynamic";
+
 interface Booking {
   id: string;
   event_name: string;

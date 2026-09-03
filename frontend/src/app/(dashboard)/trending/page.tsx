@@ -8,6 +8,9 @@ import { useTrendingBeats, useBeatCategories } from '@/hooks/useBeatQueries';
 import { useApiError } from '@/hooks/useApiError';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 type TimeRange = 'daily' | 'weekly' | 'monthly' | 'alltime';
 
 export default function TrendingPage() {

@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { SocialMediaIntegration } from '@/components/chat/integrations/SocialMediaIntegration';
 
+
+export const dynamic = "force-dynamic";
+
 export default function FeedPage() {
   const [feedType, setFeedType] = useState<
     'following' | 'discover' | 'trending'

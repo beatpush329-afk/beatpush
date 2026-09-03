@@ -8,6 +8,9 @@ import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatsCard } from '@/components/dashboards/shared/StatsCard';
 
+
+export const dynamic = "force-dynamic";
+
 export default function AdminDashboardPage() {
   const { data: stats, isLoading } = usePlatformStats();
 

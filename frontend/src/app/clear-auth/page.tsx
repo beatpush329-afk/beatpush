@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 
+
+export const dynamic = "force-dynamic";
+
 export default function ClearAuthPage() {
   const { logout } = useAuthStore();
   const router = useRouter();

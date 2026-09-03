@@ -3,6 +3,9 @@
 import { useState, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+
+export const dynamic = "force-dynamic";
+
   Bell,
   Heart,
   MessageSquare,

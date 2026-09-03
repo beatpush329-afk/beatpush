@@ -7,6 +7,9 @@ import { DJDashboard } from '@/components/dashboards/DJDashboard';
 import { ProducerDashboard } from '@/components/dashboards/ProducerDashboard';
 import { FanDashboard } from '@/components/dashboards/FanDashboard';
 
+
+export const dynamic = "force-dynamic";
+
 const ROLES = ['artist', 'dj', 'producer', 'fan', 'admin'] as const;
 
 export default function DashboardPage() {

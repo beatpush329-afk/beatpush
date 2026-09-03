@@ -1,5 +1,8 @@
 'use client';
 
+
+export const dynamic = "force-dynamic";
+
 export default function TestDashboard() {
   return (
     <div className="p-8 bg-white dark:bg-gray-900 min-h-screen">

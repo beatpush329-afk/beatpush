@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 type Tab = 'all' | 'joined' | 'featured';
 type TierType = 'basic' | 'plus' | 'vip';
 

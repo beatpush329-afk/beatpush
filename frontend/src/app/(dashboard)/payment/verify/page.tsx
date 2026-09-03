@@ -6,6 +6,9 @@ import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { paymentService } from '@/services/paymentService';
 
+
+export const dynamic = "force-dynamic";
+
 export default function PaymentVerifyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();

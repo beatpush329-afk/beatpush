@@ -11,6 +11,9 @@ import { ArrowLeft, Shield, Bell, Eye, UserX } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatDistanceToNow } from 'date-fns';
 
+
+export const dynamic = "force-dynamic";
+
 export default function MessagingSettingsPage() {
   const router = useRouter();
   const [settings, setSettings] = useState<MessageSettings | null>(null);

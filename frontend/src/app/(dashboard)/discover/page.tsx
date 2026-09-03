@@ -11,6 +11,9 @@ import { cn } from '@/lib/utils';
 import { PAGINATION } from '@/lib/constants';
 
 // Placeholder categories (will be replaced with real ones from API)
+
+export const dynamic = "force-dynamic";
+
 const CATEGORIES = [
   { id: 'trending', icon: TrendingUp, label: 'Trending', color: 'text-secondary' },
   { id: 'new', icon: Star, label: 'New Releases', color: 'text-tertiary' },

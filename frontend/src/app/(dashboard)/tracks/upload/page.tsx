@@ -10,6 +10,9 @@ import { trackService } from '@/services/trackService';
 import { useAuthStore } from '@/store/authStore';
 import { toast } from 'sonner';
 
+
+export const dynamic = "force-dynamic";
+
 const GENRES = [
   'Afrobeat', 'Hip Hop', 'R&B', 'Amapiano', 'Gospel', 'Pop',
   'Dancehall', 'Reggae', 'Afro-Fusion', 'Alte', 'Trap', 'Drill',

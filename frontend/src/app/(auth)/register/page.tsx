@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import { RegisterForm } from '@/components/features/auth/RegisterForm';
 
+
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: 'Create Account | BeatPush',
   description: 'Join BeatPush and start promoting your music to African audiences',

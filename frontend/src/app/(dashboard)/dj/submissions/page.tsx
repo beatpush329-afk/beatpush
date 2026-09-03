@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { djSubmissionService, type DJSubmission } from '@/services/djSubmissionService';
 
+
+export const dynamic = "force-dynamic";
+
 export default function DJSubmissionsPage() {
   const [submissions, setSubmissions] = useState<DJSubmission[]>([]);
   const [isLoading, setIsLoading] = useState(true);

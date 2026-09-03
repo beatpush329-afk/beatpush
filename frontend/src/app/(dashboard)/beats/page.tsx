@@ -12,6 +12,9 @@ import { useApiError } from '@/hooks/useApiError';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 type SortOption = 'recent' | 'popular' | 'earning';
 
 export default function BeatsPage() {

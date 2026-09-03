@@ -10,6 +10,9 @@ import { Button } from '@/components/ui/button';
 import { searchService, type SearchFilters } from '@/services/searchService';
 import type { Beat } from '@/types';
 
+
+export const dynamic = "force-dynamic";
+
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';

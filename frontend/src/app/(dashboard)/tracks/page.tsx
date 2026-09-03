@@ -9,6 +9,9 @@ import { trackService, type Track } from '@/services/trackService';
 import { useAuthStore } from '@/store/authStore';
 import { TrackCard } from '@/components/features/tracks/TrackCard';
 
+
+export const dynamic = "force-dynamic";
+
 const GENRES = ['All', 'Afrobeat', 'Hip Hop', 'R&B', 'Amapiano', 'Gospel', 'Pop', 'Dancehall'];
 
 export default function TracksPage() {

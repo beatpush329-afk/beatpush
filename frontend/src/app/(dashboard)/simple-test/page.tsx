@@ -1,4 +1,9 @@
 export default function SimpleTest() {
+
+
+export const dynamic = "force-dynamic";
+
+export default function SimpleTest() {
   return (
     <div style={{ padding: '20px', backgroundColor: 'red', color: 'white', fontSize: '24px' }}>
       <h1>SIMPLE TEST PAGE</h1>

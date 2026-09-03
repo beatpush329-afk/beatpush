@@ -13,6 +13,9 @@ import { useChatContext } from '@/components/chat/components/ChatProvider';
 import { useChatStore } from '@/components/chat/store/chatStore';
 import { useToast } from '@/hooks/useToast';
 
+
+export const dynamic = "force-dynamic";
+
 export default function ProfilePage() {
   const { user } = useAuthStore();
   const { openChat } = useChatContext();

@@ -14,6 +14,9 @@ import { MessageSquarePlus, Settings, Inbox, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── Filter tabs (task 23.3) ─────────────────────────────────────────────────
+
+export const dynamic = "force-dynamic";
+
 type FilterTab = 'all' | 'unread' | 'requests' | 'archived';
 
 const FILTER_TABS: { value: FilterTab; label: string }[] = [

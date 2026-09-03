@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Disc3, Mic2, Users, ArrowRight, Sparkles, Zap, TrendingUp, DollarSign, MessageCircle, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+
+export const dynamic = "force-dynamic";
+
 const roles = [
   {
     id: 'artist',

@@ -4,6 +4,9 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { PasswordResetConfirm } from '@/components/features/auth/PasswordResetConfirm';
 
+
+export const dynamic = "force-dynamic";
+
 function ResetPasswordConfirmContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');

@@ -9,6 +9,9 @@ import { useApiError } from '@/hooks/useApiError';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 export default function CartPage() {
   const router = useRouter();
   const { user } = useAuthStore();

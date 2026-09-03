@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input';
 import { djSubmissionService, type DJ } from '@/services/djSubmissionService';
 import { DJCard } from '@/components/features/djs/DJCard';
 
+
+export const dynamic = "force-dynamic";
+
 const GENRES = ['All', 'Afrobeat', 'Hip Hop', 'R&B', 'Amapiano', 'Gospel', 'Dancehall'];
 
 export default function DJsPage() {

@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import { PasswordResetRequest } from '@/components/features/auth/PasswordResetRequest';
 
+
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: 'Reset Password | BeatPush',
   description: 'Reset your BeatPush account password',

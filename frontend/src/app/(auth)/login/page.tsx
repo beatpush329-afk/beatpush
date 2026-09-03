@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import { LoginForm } from '@/components/features/auth/LoginForm';
 
+
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: 'Sign In | BeatPush',
   description: 'Sign in to your BeatPush account to manage your music promotion',

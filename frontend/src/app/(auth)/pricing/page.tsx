@@ -6,6 +6,9 @@ import { Check, Zap, Crown, Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/brand/Logo';
 
+
+export const dynamic = "force-dynamic";
+
 const plans = [
   {
     name: 'Free',

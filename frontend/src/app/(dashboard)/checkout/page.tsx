@@ -11,6 +11,9 @@ import { useAuthStore } from '@/store/authStore';
 import { useApiError } from '@/hooks/useApiError';
 import { cn } from '@/lib/utils';
 
+
+export const dynamic = "force-dynamic";
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { user } = useAuthStore();

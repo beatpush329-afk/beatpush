@@ -7,6 +7,9 @@ import { Zap, Wand2, Shield, MessageSquare, Loader2, AlertCircle } from 'lucide-
 import apiClient from '@/lib/apiClient';
 import { useToast } from '@/hooks/useToast';
 
+
+export const dynamic = "force-dynamic";
+
 interface AnalysisResult {
   success: boolean;
   [key: string]: any;

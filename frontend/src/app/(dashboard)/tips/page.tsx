@@ -4,6 +4,9 @@ import { useState, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import {
+
+export const dynamic = "force-dynamic";
+
   Heart,
   TrendingUp,
   Wallet,
