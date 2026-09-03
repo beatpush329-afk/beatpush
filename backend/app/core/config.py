@@ -21,19 +21,26 @@ class Settings(BaseSettings):
     PORT: int = 9000
     
     # Database
-    DATABASE_URL: str
+    DATABASE_URL: str = "sqlite:///./beatspush.db"
     DATABASE_ECHO: bool = False
     
     # Redis
-    REDIS_URL: str
+    REDIS_URL: str = "redis://localhost:6379/0"
     
     # Celery
-    CELERY_BROKER_URL: str
-    CELERY_RESULT_BACKEND: str
+    CELERY_BROKER_URL: str = "redis://localhost:6379/1"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
     
     # JWT
-    JWT_SECRET_KEY: str
+    JWT_SECRET_KEY: Optional[str] = None
     JWT_ALGORITHM: str = "HS256"
+    
+    @validator("JWT_SECRET_KEY", always=True)
+    def set_jwt_secret(cls, v, values):
+        # Use SECRET_KEY as fallback for JWT_SECRET_KEY
+        if v is None:
+            return values.get("SECRET_KEY", "default_jwt_secret_change_in_production")
+        return v
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
@@ -100,12 +107,12 @@ class Settings(BaseSettings):
     
     # Email
     EMAIL_ENABLED: bool = True
-    SMTP_HOST: str
+    SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
-    SMTP_USER: str
-    SMTP_PASSWORD: str
-    EMAILS_FROM_EMAIL: str
-    EMAILS_FROM_NAME: str
+    SMTP_USER: str = "noreply@beatpush.com"
+    SMTP_PASSWORD: str = "your_smtp_password_here"
+    EMAILS_FROM_EMAIL: str = "noreply@beatpush.com"
+    EMAILS_FROM_NAME: str = "BeatsPush"
     
     # Spotify
     SPOTIFY_CLIENT_ID: Optional[str] = None
